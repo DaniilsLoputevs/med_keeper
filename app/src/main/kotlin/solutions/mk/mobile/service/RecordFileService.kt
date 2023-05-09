@@ -1,6 +1,7 @@
 package solutions.mk.mobile.service
 
 import android.net.Uri
+import org.koin.core.annotation.Single
 import solutions.mk.mobile.common.Global
 import solutions.mk.mobile.common.copy
 import solutions.mk.mobile.common.takeFullFileName
@@ -9,7 +10,7 @@ import solutions.mk.mobile.config.ApplicationConfig
 import java.io.File
 import java.io.FileOutputStream
 
-class RecordFileService {
+@Single class RecordFileService {
     // TODO : Inject!
     private val appConfig: ApplicationConfig by lazy { Global.applicationConfig }
 
