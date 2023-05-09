@@ -1,19 +1,29 @@
 package solutions.mk.mobile.service
 
 import android.net.Uri
-import solutions.mk.mobile.common.*
+import solutions.mk.mobile.common.Global
+import solutions.mk.mobile.common.copy
+import solutions.mk.mobile.common.takeFullFileName
+import solutions.mk.mobile.common.use
 import solutions.mk.mobile.config.ApplicationConfig
 import java.io.File
 import java.io.FileOutputStream
 
 class RecordFileService {
-    private val appConfig: ApplicationConfig = Global.applicationConfig
+    // TODO : Inject!
+    private val appConfig: ApplicationConfig by lazy { Global.applicationConfig }
+
+    // TODO : Inject!
+    private val pdfConverter: PDFConverter by lazy { Global.pdfConverter }
+
+    // TODO : Inject!
+    private val filesDir: File by lazy { Global.applicationContext.filesDir }
 
     /**
      * default: File("${app}/files/records")
      */
     private val recordFilesDir: File by lazy {
-        File("${Global.applicationContext.filesDir}${appConfig.relativePathToStoreRecordFiles}")
+        File("${filesDir}${appConfig.relativePathToStoreRecordFiles}")
             .apply { if (!exists()) mkdirs() }
     }
 
@@ -29,6 +39,21 @@ class RecordFileService {
             .apply { println(absolutePath) }
             .also { recordFile -> copyContent(uri, recordFile) }
 
+    /**
+     * @param fileName without extension
+     * @param imageUriList
+     */
+    fun saveRecordFile(fileName: String, imageUriList: List<Uri>): File =
+        File(recordFilesDir, "${fileName}.pdf")
+            .apply { createNewFile() }
+            .also { pdfFile ->
+                pdfConverter.allImagesConvertToPDF(imageUriList).use { input ->
+                    FileOutputStream(pdfFile).use { output ->
+                        input.writeTo(output)
+                    }
+                }
+            }
+
     fun deleteRecordFile(fileNameWithExtension: String) = File(recordFilesDir, fileNameWithExtension).deleteOnExit()
 
 
@@ -40,6 +65,3 @@ class RecordFileService {
             Global.contentResolver.openInputStream(fromUri)?.use { fromInput -> copy(fromInput, toOutput) }
         }
 }
-
-
-

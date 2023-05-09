@@ -2,8 +2,10 @@ package solutions.mk.mobile.common
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver
+import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
@@ -56,3 +58,14 @@ fun ContentResolver.query(
     selectionArgs: Array<String?>? = null,
     sortOrder: String? = null
 ) = Global.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
+
+fun <R> PdfDocument.use(block: (PdfDocument) -> R): R =
+    try {
+        val rsl = block(this)
+        this.close()
+        rsl
+    } catch (e: IOException) {
+        e.printStackTrace()
+        Toast.makeText(Global.applicationContext, "Something wrong: $e", Toast.LENGTH_LONG).show()
+        throw e
+    }
