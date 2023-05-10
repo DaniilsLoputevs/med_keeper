@@ -1,14 +1,17 @@
 package solutions.mk.mobile.service
 
+import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
-import solutions.mk.mobile.common.Global
+import org.koin.core.annotation.Single
+import solutions.mk.mobile.common.injectAndroid
 
-class PDFConverter {
+@Single class PDFConverter {
+    private val contentResolver: ContentResolver by injectAndroid()
     private val colourWhite = Paint().apply { color = Color.parseColor("#ffffff") }
 
     /**
@@ -40,7 +43,7 @@ class PDFConverter {
             ?: kotlin.run { throw RuntimeException("Fail to decode Bitmap from filepath:$filePath") }
 
     private fun uriToBitmap(imageUri: Uri): Bitmap =
-        BitmapFactory.decodeStream(Global.contentResolver.openInputStream(imageUri))
+        BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
             ?: kotlin.run { throw RuntimeException("Fail to open InputStream from Uri:$imageUri") }
 
 }

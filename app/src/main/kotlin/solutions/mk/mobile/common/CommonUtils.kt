@@ -10,6 +10,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
+import solutions.mk.mobile.config.ApplicationConfig
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -17,7 +18,7 @@ import kotlin.random.Random
 
 @Throws(IOException::class)
 fun copy(source: InputStream, target: OutputStream) {
-    val buf = ByteArray(Global.applicationConfig.copyFileByteBufferSize)
+    val buf = ByteArray(get<ApplicationConfig>().copyFileByteBufferSize)
     var length: Int
     while (source.read(buf).also { length = it } > 0) {
         target.write(buf, 0, length)
@@ -26,7 +27,7 @@ fun copy(source: InputStream, target: OutputStream) {
 
 @SuppressLint("Range")
 fun takeFullFileName(contentUri: Uri): String =
-    Global.contentResolver.query(contentUri)?.let {
+    getAndroid<ContentResolver>().query(contentUri)?.let {
         it.use { cursor ->
             cursor.moveToFirst()
             cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
@@ -57,7 +58,7 @@ fun ContentResolver.query(
     selection: String? = null,
     selectionArgs: Array<String?>? = null,
     sortOrder: String? = null
-) = Global.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
+) = this.query(uri, projection, selection, selectionArgs, sortOrder)
 
 fun <R> PdfDocument.use(block: (PdfDocument) -> R): R =
     try {
@@ -66,6 +67,6 @@ fun <R> PdfDocument.use(block: (PdfDocument) -> R): R =
         rsl
     } catch (e: IOException) {
         e.printStackTrace()
-        Toast.makeText(Global.applicationContext, "Something wrong: $e", Toast.LENGTH_LONG).show()
+        Toast.makeText(getAndroid(), "Something wrong: $e", Toast.LENGTH_LONG).show()
         throw e
     }

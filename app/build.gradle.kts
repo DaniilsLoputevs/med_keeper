@@ -44,7 +44,7 @@ android {
     kotlin {
         sourceSets.main {
             kotlin {
-                // default "main" & "test" source paths declared by default - IDK where
+                /* default "main" & "test" source paths declared by default - IDK where */
                 srcDirs("build/generated/ksp/main/kotlin")
                 srcDirs("build/generated/ksp/test/kotlin")
             }

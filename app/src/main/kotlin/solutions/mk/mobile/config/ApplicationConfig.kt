@@ -1,7 +1,9 @@
 package solutions.mk.mobile.config
 
-// todo - в идеале этот конфиг читается с файла в Bean + Inject, а пока так.
-class ApplicationConfig {
+import org.koin.core.annotation.Single
+
+// todo - the best way - read file from disk but now it's OK.
+@Single class ApplicationConfig {
     /**
      * description: ...
      * pattern: "${app}/files${value}"

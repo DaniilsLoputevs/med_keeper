@@ -1,30 +1,25 @@
 package solutions.mk.mobile.service
 
+import android.content.ContentResolver
+import android.content.Context
 import android.net.Uri
 import org.koin.core.annotation.Single
-import solutions.mk.mobile.common.Global
-import solutions.mk.mobile.common.copy
-import solutions.mk.mobile.common.takeFullFileName
-import solutions.mk.mobile.common.use
+import solutions.mk.mobile.common.*
 import solutions.mk.mobile.config.ApplicationConfig
 import java.io.File
 import java.io.FileOutputStream
 
 @Single class RecordFileService {
-    // TODO : Inject!
-    private val appConfig: ApplicationConfig by lazy { Global.applicationConfig }
-
-    // TODO : Inject!
-    private val pdfConverter: PDFConverter by lazy { Global.pdfConverter }
-
-    // TODO : Inject!
-    private val filesDir: File by lazy { Global.applicationContext.filesDir }
+    private val contentResolver: ContentResolver by injectAndroid()
+    private val appContext: Context by injectAndroid()
+    private val appConfig: ApplicationConfig by inject()
+    private val pdfConverter: PDFConverter by inject()
 
     /**
      * default: File("${app}/files/records")
      */
     private val recordFilesDir: File by lazy {
-        File("${filesDir}${appConfig.relativePathToStoreRecordFiles}")
+        File("${appContext.filesDir}${appConfig.relativePathToStoreRecordFiles}")
             .apply { if (!exists()) mkdirs() }
     }
 
@@ -63,6 +58,6 @@ import java.io.FileOutputStream
 
     private fun copyContent(fromUri: Uri, toFile: File) =
         FileOutputStream(toFile).use { toOutput ->
-            Global.contentResolver.openInputStream(fromUri)?.use { fromInput -> copy(fromInput, toOutput) }
+            contentResolver.openInputStream(fromUri)?.use { fromInput -> copy(fromInput, toOutput) }
         }
 }
