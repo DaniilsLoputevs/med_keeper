@@ -5,16 +5,17 @@ plugins {
 }
 val koin_version = "3.3.0"
 val koin_ksp_version = "1.1.0"
+val room_version = "2.5.1"
 
 
 android {
     namespace = "solutions.mk.mobile"
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "solutions.mk.mobile"
         minSdk = 24
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -66,6 +67,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     installKoin()
+    installRoom()
 }
 
 fun DependencyHandlerScope.installKoin() {
@@ -73,5 +75,14 @@ fun DependencyHandlerScope.installKoin() {
     implementation("io.insert-koin:koin-annotations:$koin_ksp_version")
     ksp("io.insert-koin:koin-ksp-compiler:$koin_ksp_version")
     //    implementation("io.insert-koin:koin-logger-slf4j:$koin_version") //To use slf4logger in install block in App module for koin
+}
 
+fun DependencyHandlerScope.installRoom() {
+    // https://developer.android.com/training/data-storage/room#kotlin
+
+    implementation("androidx.room:room-common:2.4.2")
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
 }

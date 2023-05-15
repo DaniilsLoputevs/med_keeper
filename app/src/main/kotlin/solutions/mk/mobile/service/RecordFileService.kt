@@ -36,6 +36,9 @@ import java.io.FileOutputStream
             .also { recordFile -> copyContent(uri, recordFile) }
 
     /**
+     * TODO : Ideas: Look at this thing like a Factory
+     *      - receive Uri and return file witch one of type [pdf, mp4 and etc]
+     *      if you need fileExtension, take in from @return File.name.split(".").last()
      * @param fileName without extension
      * @param imageUriList
      */
