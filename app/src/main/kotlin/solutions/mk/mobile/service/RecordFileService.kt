@@ -29,7 +29,7 @@ import java.io.FileOutputStream
      *
      * @return Saved File.
      */
-    fun saveRecordFile(uri: Uri): File =
+    fun saveRecordFilePdfFromImages(uri: Uri): File =
         File(recordFilesDir, takeFullFileName(uri))
             .apply { createNewFile() }
             .apply { println(absolutePath) }
@@ -39,10 +39,12 @@ import java.io.FileOutputStream
      * TODO : Ideas: Look at this thing like a Factory
      *      - receive Uri and return file witch one of type [pdf, mp4 and etc]
      *      if you need fileExtension, take in from @return File.name.split(".").last()
+     *
+     * TODO - auto-resolve file extension from Uri. [pdf, mp4 and etc] - now it's hardcode for PDF
      * @param fileName without extension
      * @param imageUriList
      */
-    fun saveRecordFile(fileName: String, imageUriList: List<Uri>): File =
+    fun saveRecordFilePdfFromImages(fileName: String, imageUriList: List<Uri>): File =
         File(recordFilesDir, "${fileName}.pdf")
             .apply { createNewFile() }
             .also { pdfFile ->

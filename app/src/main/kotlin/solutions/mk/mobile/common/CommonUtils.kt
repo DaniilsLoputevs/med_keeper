@@ -5,6 +5,8 @@ import android.content.ContentResolver
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -70,3 +72,16 @@ fun <R> PdfDocument.use(block: (PdfDocument) -> R): R =
         Toast.makeText(getAndroid(), "Something wrong: $e", Toast.LENGTH_LONG).show()
         throw e
     }
+
+fun textWatcherOnTextChanged(block: (s: CharSequence?, start: Int, before: Int, count: Int) -> Unit): TextWatcher =
+    object : TextWatcher by EmptyTextWatcher() {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int): Unit =
+            block(s, start, before, count)
+    }
+
+class EmptyTextWatcher : TextWatcher {
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    override fun afterTextChanged(s: Editable?) {}
+}
+
