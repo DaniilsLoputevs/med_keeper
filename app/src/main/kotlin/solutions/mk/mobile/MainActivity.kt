@@ -2,7 +2,7 @@ package solutions.mk.mobile
 
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextWatcher
+import android.text.Editable
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.GetMultipleContents
@@ -10,10 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import org.koin.android.ext.android.inject
+import solutions.mk.mobile.android.addTextWatcherAfterTextChanged
+import solutions.mk.mobile.android.registryAction
+import solutions.mk.mobile.common.RecordGroupsInputEditText
+import solutions.mk.mobile.common.addValidationRequiredField
 import solutions.mk.mobile.common.getAndroid
-import solutions.mk.mobile.common.registryAction
-import solutions.mk.mobile.common.textWatcherOnTextChanged
+import solutions.mk.mobile.common.requiredFieldMsg
 import solutions.mk.mobile.config.KoinConfig
 import solutions.mk.mobile.persist.dao.*
 import solutions.mk.mobile.persist.sqlBlocking
@@ -26,67 +30,81 @@ class MainActivity : AppCompatActivity() {
     private val groupRepo: GroupRepo by inject()
     private val recordAndGroupRelationRepo: RecordAndGroupRelationRepo by inject()
 
-    // todo - some type of preview of selected images
-    //          show grid of cards with uploaded images
-    //          https://codelabs.developers.google.com/codelabs/mdc-102-kotlin#4
-    private val selectImagesButton: MaterialButton by lazy { findViewById(R.id.selectImages) }
 
-    // todo - show to user result filename with extension + replace space chars
-    //          field: "doc file"
-    //          show : "doc_file.pdf"
+    /**
+     * TODO - (for activity/fragment about Select Images)
+     *          show grid of cards with uploaded images
+     *          https://codelabs.developers.google.com/codelabs/mdc-102-kotlin#4
+     * TODO - (middle priority) validations:
+     *          Required field
+     */
+    private val selectImagesButton: MaterialButton by lazy { findViewById(R.id.selectImages) }
+    private val imagesUris: MutableLiveData<List<Uri>> = MutableLiveData(emptyList())
+
+    private val recordFileNameLayout: TextInputLayout by lazy { findViewById(R.id.inputLayout_recordFileName) }
     private val recordFileNameInput: TextInputEditText by lazy { findViewById(R.id.recordFileName) }
+
     private val recordDescriptionInput: TextInputEditText by lazy { findViewById(R.id.recordDescription) }
 
-    // todo - show to user result groups
-    //          field: "aaa, bbb,ccc" - whole string
-    //          show : [aaa,bbb,ccc] - String array
-    private val recordGroupInput: TextInputEditText by lazy { findViewById(R.id.recordGroups) }
+    /**
+     * TODO - Split packages by ENTER not by SPACE
+     *          NOW:  package split == ' ' - SPACE
+     *          NEED: package split == System.lineSeparator() - ENTER
+     *          REASON: ' ' == SPACE - this char can be use in package name.
+     *          User can create a new package(tag name == packageName) while adding file.
+     *          P.s. It will fix bug/feature that after press ENTER new tags move to new line and next new tags
+     *              has strange behavior for user.
+     * TODO - (low priority) ? Maybe highlight package-tags what exists already?
+     */
+    private val recordGroupSpanLayout: TextInputLayout by lazy { findViewById(R.id.inputLayout_recordGroupSpans) }
+    private val recordGroupSpanInput: RecordGroupsInputEditText by lazy { findViewById(R.id.recordGroupSpans) }
+
     private val submitSelectButton: MaterialButton by lazy { findViewById(R.id.submitButton) }
 
 
-    private val imagesUris: MutableLiveData<List<Uri>> = MutableLiveData(emptyList())
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        KoinConfig(this).startKoin()
-        try {
-            super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        Thread.sleep(1500)
-        throw e
+        KoinConfig(this).startKoin()
+
+        initActivityUI()
     }
 
-        // todo - https://stackoverflow.com/questions/11535011/edittext-field-is-required-before-moving-on-to-another-activity
-        //        last answer
-        recordFileNameInput.addTextChangedListener(requiredFieldTextWatcher())
-        recordGroupInput.addTextChangedListener(requiredFieldTextWatcher())
-
+    private fun initActivityUI() {
         val selectImagesAction = registryAction(GetMultipleContents()) { imagesUris.value = it }
         selectImagesButton.setOnClickListener { selectImagesAction.launch("image/*") } // todo - "*/*" select any file type
+
+        // todo - https://stackoverflow.com/questions/11535011/edittext-field-is-required-before-moving-on-to-another-activity
+        //          last answer
+        (recordFileNameLayout to recordFileNameInput).addValidationRequiredField()
+        recordFileNameInput.addTextWatcherAfterTextChanged(::updateHelpTextResultFileName)
+
+        (recordGroupSpanLayout to recordGroupSpanInput).addValidationRequiredField()
+
         submitSelectButton.setOnClickListener(::submitSelectImages)
+
     }
 
 
     /** @see [View.OnClickListener] */
     private fun submitSelectImages(view: View) {
         val imageUris = imagesUris.value ?: emptyList()
-        val groups = recordGroupInput.text.toString().split(",").map(::GroupEntity)
+        val groups = recordGroupSpanInput.groupsFromText.map(::GroupEntity)
         val fileNameWithoutExtension = recordFileNameInput.text.toString()
         val description = recordDescriptionInput.text.toString()
 
         // validation
         var isFail = false
         if (imageUris.isEmpty()) {
-            selectImagesButton.error = "This field is required!"
+            selectImagesButton.error = requiredFieldMsg
             isFail = true
         }
         if (groups.isEmpty()) {
-            recordFileNameInput.error = "This field is required!"
+            recordFileNameLayout.error = requiredFieldMsg
             isFail = true
         }
         if (fileNameWithoutExtension.isBlank()) {
-            recordFileNameInput.error = "This field is required!"
+            recordFileNameLayout.error = requiredFieldMsg
             isFail = true
         }
         if (isFail) return
@@ -104,14 +122,12 @@ class MainActivity : AppCompatActivity() {
             println("imageUris[0]  = ${imageUris[0]}}")
             println("groups        = ${sqlBlocking { groupRepo.getAll() }}")
             println("relations     = ${sqlBlocking { recordAndGroupRelationRepo.getAll() }}")
-            Toast.makeText(getAndroid(), "file saved successfully", Toast.LENGTH_SHORT).show()
+            Toast.makeText(getAndroid(), "file saved successfully", Toast.LENGTH_SHORT).show() // todo - i18n
         }
     }
 
-    private fun requiredFieldTextWatcher(): TextWatcher =
-        textWatcherOnTextChanged { text, _, _, _ ->
-            // todo - move to String resource for i18n
-            if (text.isNullOrBlank()) recordFileNameInput.error = "This field is required!"
-        }
+    private fun updateHelpTextResultFileName(s: Editable) {
+        if (s.isNotBlank()) recordFileNameLayout.helperText = "$s.pdf - result file name" // todo - i18n
+    }
 
 }

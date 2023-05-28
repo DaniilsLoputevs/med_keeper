@@ -112,7 +112,7 @@ fun <T> sqlBlocking(useRepositoryBlock: suspend () -> T): T = runBlocking { useR
 fun <T> sqlAsync(useRepositoryBlock: suspend () -> T): Deferred<T> = sqlCoroutineScope.async { useRepositoryBlock() }
 
 
-fun createDataBase(mainApplicationContext : MainActivity) = Room.databaseBuilder(
+fun createDataBase(mainApplicationContext: MainActivity) = Room.databaseBuilder(
     mainApplicationContext,
     ApplicationDatabase::class.java,
     "mobile.mk.solutions"
