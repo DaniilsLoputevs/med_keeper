@@ -2,7 +2,6 @@ package solutions.mk.mobile.common
 
 import androidx.appcompat.widget.AppCompatEditText
 import com.google.android.material.textfield.TextInputLayout
-import solutions.mk.mobile.android.addTextWatcherTextChanged
 
 
 // todo - move to String resource for i18n

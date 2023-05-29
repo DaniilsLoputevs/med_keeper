@@ -1,4 +1,4 @@
-package solutions.mk.mobile.common
+package solutions.mk.mobile.components
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -16,7 +16,7 @@ import android.widget.LinearLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.textfield.TextInputEditText
 import solutions.mk.mobile.R
-import solutions.mk.mobile.android.addTextWatcherAfterTextChanged
+import solutions.mk.mobile.common.addTextWatcherAfterTextChanged
 import java.text.MessageFormat
 import java.util.*
 

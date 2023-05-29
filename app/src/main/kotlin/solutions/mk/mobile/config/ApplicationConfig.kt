@@ -16,5 +16,5 @@ import org.koin.core.annotation.Single
      * description: size of byte array witch use for copy files into application while Import/Adding file.
      * default: "8 kb"
      */
-    val copyFileByteBufferSize = 1024 * 8
+    val copyFileByteBufferSize = 8 * 1024
 }

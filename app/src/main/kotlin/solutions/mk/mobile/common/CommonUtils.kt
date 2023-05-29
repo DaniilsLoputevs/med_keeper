@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.net.Uri
 import android.provider.OpenableColumns
-import solutions.mk.mobile.android.query
 import solutions.mk.mobile.config.ApplicationConfig
 import java.io.IOException
 import java.io.InputStream

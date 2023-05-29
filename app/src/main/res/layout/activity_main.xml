@@ -8,139 +8,21 @@
         tools:context=".MainActivity"
         >
 
-    <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/main_importRecord_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.09"
-            />
+            android:src="@drawable/import_record_floating_action_icon"
 
-    <com.google.android.material.button.MaterialButton
-            android:id="@+id/selectImages"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:text="Select images"
-            android:textAllCaps="false"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="40dp"
+
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/guideline"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
 
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputLayout_recordFileName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="32dp"
-            app:endIconMode="clear_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/selectImages"
-            app:suffixText=".pdf"
-            >
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/recordFileName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="filename"
-                android:inputType="textEmailAddress"
-                android:nextFocusForward="@id/inputLayout_recordGroupSpans"
-                android:singleLine="true"
-                />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputLayout_recordGroupSpans"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="32dp"
-            app:endIconMode="clear_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/inputLayout_recordFileName"
-            android:layout_marginTop="84dp"
-            app:layout_constraintHorizontal_bias="0.25"
-            >
-
-        <solutions.mk.mobile.common.RecordGroupsInputEditText
-                android:id="@+id/recordGroupSpans"
-                android:hint="records groups"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textAutoComplete"
-                android:nextFocusForward="@id/inputLayout_recordDescription"
-                android:singleLine="true"
-                />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!--    <com.google.android.material.textfield.TextInputLayout-->
-    <!--            android:id="@+id/inputLayout_recordTags"-->
-    <!--            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_margin="32dp"-->
-    <!--            app:endIconMode="clear_text"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toBottomOf="@+id/inputLayout_recordFileName"-->
-    <!--            android:layout_marginTop="84dp"-->
-    <!--            app:layout_constraintHorizontal_bias="0.25"-->
-    <!--            >-->
-
-    <!--        <com.google.android.material.textfield.TextInputEditText-->
-    <!--                android:id="@+id/recordGroups"-->
-    <!--                android:hint="packages"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:inputType="textEmailAddress"-->
-    <!--                android:nextFocusForward="@id/inputLayout_recordDescription"-->
-    <!--                android:singleLine="true"-->
-    <!--                />-->
-    <!--    </com.google.android.material.textfield.TextInputLayout>-->
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputLayout_recordDescription"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/inputLayout_recordGroupSpans"
-            >
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/recordDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="description"
-                android:imeOptions="actionDone"
-                android:inputType="textPassword"
-                android:singleLine="true"
-                />
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <com.google.android.material.button.MaterialButton
-            android:id="@+id/submitButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="32dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:text="Save images as one PDF file"
-            android:textAllCaps="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/inputLayout_recordDescription"
+            android:contentDescription="FAB import record"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="40dp"
             />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

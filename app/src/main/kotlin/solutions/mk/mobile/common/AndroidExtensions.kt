@@ -1,4 +1,4 @@
-package solutions.mk.mobile.android
+package solutions.mk.mobile.common
 
 import android.content.ContentResolver
 import android.graphics.pdf.PdfDocument
@@ -11,7 +11,6 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
-import solutions.mk.mobile.common.getAndroid
 import java.io.IOException
 import kotlin.random.Random
 

@@ -4,14 +4,11 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import org.koin.core.annotation.Single
-import solutions.mk.mobile.android.use
-import solutions.mk.mobile.common.copy
-import solutions.mk.mobile.common.inject
-import solutions.mk.mobile.common.injectAndroid
-import solutions.mk.mobile.common.takeFullFileName
+import solutions.mk.mobile.common.*
 import solutions.mk.mobile.config.ApplicationConfig
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.io.use
 
 @Single class RecordFileService {
     private val contentResolver: ContentResolver by injectAndroid()
