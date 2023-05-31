@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/activity__import_from_device__filename_input"
-                android:inputType="textEmailAddress"
+                android:inputType="text"
                 android:nextFocusForward="@id/recordGroups_layout"
                 android:singleLine="true"
                 />
@@ -98,9 +98,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/activity__import_from_device__description_input"
-                android:imeOptions="actionDone"
-                android:inputType="textPassword"
                 android:singleLine="true"
+                android:inputType="text"
                 />
     </com.google.android.material.textfield.TextInputLayout>
 

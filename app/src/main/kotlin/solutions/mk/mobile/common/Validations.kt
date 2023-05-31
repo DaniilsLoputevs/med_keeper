@@ -5,7 +5,7 @@ import com.google.android.material.textfield.TextInputLayout
 import solutions.mk.mobile.R
 
 
-val requiredFieldMsg by lazy { getStrResource(R.string.validation__required_field) }
+val requiredFieldMsg by strResource(R.string.validation__required_field)
 
 /**
  * Validation for Layout and TextInput

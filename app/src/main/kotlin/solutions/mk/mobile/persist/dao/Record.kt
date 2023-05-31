@@ -33,4 +33,7 @@ interface RecordRepo {
     @Insert suspend fun insertAll(vararg records: RecordEntity)
     @Update suspend fun updateAll(vararg records: RecordEntity)
     @Delete suspend fun deleteAll(vararg records: RecordEntity)
+
+    @Query("SELECT exists(SELECT 1 FROM records WHERE file_name = :filename)")
+    suspend fun containsByName(filename: String): Boolean
 }

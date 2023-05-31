@@ -19,6 +19,13 @@ import solutions.mk.mobile.persist.dao.*
 import solutions.mk.mobile.persist.sqlBlocking
 import solutions.mk.mobile.service.RecordFileService
 
+/**
+ * Activity: Select one or more img file from external store (device memory) and convert it to one PDF file.
+ * Finally save Records based on this PDF file.
+ * TODO - expected extension way - add photo to list selected files.
+ * TODO - expected extension way - show previews of selected images as a grid of photos.
+ * TODO - expected extension way - split to 2 parts(probably ActivityFragments) 1 - select list images, 2 - select solo file(PDF, WORD, mp4, etc...)
+ */
 class ImportFromDeviceActivity : AppCompatActivity() {
     private val recordFileService: RecordFileService by inject()
     private val recordRepo: RecordRepo by inject()
@@ -27,6 +34,7 @@ class ImportFromDeviceActivity : AppCompatActivity() {
 
     private val strRecordSaveSuccessfully by strResource(R.string.activity__import_from_device__record_saved_successfully)
     private val strFinalFilenameSuffix by strResource(R.string.activity__import_from_device__final_filename_suffix)
+    private val strThisFilenameIsAlreadyInUse by strResource(R.string.validation__this_filename_is_already_in_use)
 
     /**
      * TODO - (for activity/fragment about Select Images)
@@ -41,6 +49,7 @@ class ImportFromDeviceActivity : AppCompatActivity() {
     private val recordFileNameLayout: TextInputLayout by lazy { findViewById(R.id.recordFileName_layout) }
     private val recordFileNameInput: TextInputEditText by lazy { findViewById(R.id.recordFileName_input) }
 
+    // TODO - ? make it a TextArea?
     private val recordDescriptionInput: TextInputEditText by lazy { findViewById(R.id.recordDescription_input) }
 
     /**
@@ -98,22 +107,30 @@ class ImportFromDeviceActivity : AppCompatActivity() {
             isFail = true
         }
         if (groups.isEmpty()) {
-            recordFileNameLayout.error = requiredFieldMsg
+            recordGroupsLayout.error = requiredFieldMsg
             isFail = true
         }
         if (fileNameWithoutExtension.isBlank()) {
             recordFileNameLayout.error = requiredFieldMsg
             isFail = true
         }
+        "$fileNameWithoutExtension.pdf".also { fullFilename ->
+            if (recordFileService.isExistsFileWithName(fullFilename) ||
+                sqlBlocking { recordRepo.containsByName(fullFilename) }
+            ) {
+                recordFileNameLayout.error = strThisFilenameIsAlreadyInUse
+                isFail = true
+            }
+        }
+
         if (isFail) return
 
 
-        val recordFile = recordFileService.saveRecordFilePdfFromImages(fileNameWithoutExtension, imageUris)
-        // todo - make async + show loading spinner while waiting for sql finish.
+        val pdfFilename = recordFileService.saveRecordFilePdfFromImages(fileNameWithoutExtension, imageUris).name
         sqlBlocking {
-            recordRepo.insertAll(RecordEntity(recordFile.name, description))
+            recordRepo.insertAll(RecordEntity(pdfFilename, description))
             groupRepo.insertAll(groups)
-            val relations = groups.map { RecordAndGroupRelation(fileName = recordFile.name, groupName = it.name) }
+            val relations = groups.map { RecordAndGroupRelation(fileName = pdfFilename, groupName = it.name) }
             recordAndGroupRelationRepo.insertAll(relations)
 
             println("records       = ${sqlBlocking { recordRepo.getAll() }}")
@@ -121,6 +138,7 @@ class ImportFromDeviceActivity : AppCompatActivity() {
             println("groups        = ${sqlBlocking { groupRepo.getAll() }}")
             println("relations     = ${sqlBlocking { recordAndGroupRelationRepo.getAll() }}")
             Toast.makeText(getAndroid(), strRecordSaveSuccessfully, Toast.LENGTH_SHORT).show()
+            switchActivityTo<MainActivity>()
         }
     }
 

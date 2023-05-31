@@ -2,6 +2,7 @@ package solutions.mk.mobile.common
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.text.Editable
@@ -32,6 +33,10 @@ fun <CONTRACT, LAUNCH_PARAM, CALLBACK_PARAM> AppCompatActivity.registryAction(
 ): ActivityResultLauncher<LAUNCH_PARAM>
         where CONTRACT : ActivityResultContract<LAUNCH_PARAM, CALLBACK_PARAM> =
     activityResultRegistry.register(Random.nextDouble().toString(), this, activityContract, activityCallback)
+
+inline fun <reified ACTIVITY : AppCompatActivity> AppCompatActivity.switchActivityTo() =
+    this.startActivity(Intent(this, ACTIVITY::class.java))
+
 
 fun ContentResolver.query(
     uri: Uri,

@@ -29,28 +29,25 @@ import java.io.FileOutputStream
      *
      * @return Saved File.
      */
-    fun saveRecordFilePdfFromImages(uri: Uri): File =
+    @Deprecated("old API")
+    fun saveRecordFile(uri: Uri): File =
         File(recordFilesDir, takeFullFileName(uri))
             .apply { createNewFile() }
             .apply { println(absolutePath) }
             .also { recordFile -> copyContent(uri, recordFile) }
 
     /**
-     * TODO : Ideas: Look at this thing like a Factory
-     *      - receive Uri and return file witch one of type [pdf, mp4 and etc]
-     *      if you need fileExtension, take in from @return File.name.split(".").last()
-     *
-     * TODO - auto-resolve file extension from Uri. [pdf, mp4 and etc] - now it's hardcode for PDF
-     * @param fileName without extension
-     * @param imageUriList
+     * @param fileName without file extension.
+     * @param imageUriList content for PDF.
+     * @return File("${app}/files/${appConfig.relativePathToStoreRecordFiles}/${filename}.pdf")
      */
     fun saveRecordFilePdfFromImages(fileName: String, imageUriList: List<Uri>): File =
         File(recordFilesDir, "${fileName}.pdf")
             .apply { createNewFile() }
             .also { pdfFile ->
-                pdfConverter.allImagesConvertToPDF(imageUriList).use { input ->
+                pdfConverter.allImagesConvertToPDF(imageUriList).use { pdfDocument ->
                     FileOutputStream(pdfFile).use { output ->
-                        input.writeTo(output)
+                        pdfDocument.writeTo(output)
                     }
                 }
             }
@@ -65,4 +62,7 @@ import java.io.FileOutputStream
         FileOutputStream(toFile).use { toOutput ->
             contentResolver.openInputStream(fromUri)?.use { fromInput -> copy(fromInput, toOutput) }
         }
+
+    fun isExistsFileWithName(fileNameWithExtension: String): Boolean =
+        File(recordFilesDir, fileNameWithExtension).exists()
 }

@@ -1,5 +1,6 @@
 package solutions.mk.mobile.persist
 
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -63,10 +64,10 @@ abstract class ApplicationDatabase : RoomDatabase() {
 
 /**
  * IMPORTANT!!!
- * 1 - We MUST use raw table in migration sql - avoid DAO interface!!! This is restriction from Room framework.
- * 2 - We MUST add new migration into [migrationChangelog][migrationChangelog] else magic will not happen.
- * 3 - We MUST update the version of database in code.
- * 4 - Each migration once executed should be not edit anymore.
+ * 1. We MUST use raw table in migration sql - avoid DAO interface!!! This is restriction from Room framework.
+ * 2. We MUST add new migration into [migrationChangelog][migrationChangelog] else magic will not happen.
+ * 3. We MUST update the version of database in code.
+ * 4. Each migration once executed should be not edit anymore.
  */
 fun migration(startVersion: Int, endVersion: Int, block: SupportSQLiteDatabaseMigrationDecorator.() -> Unit) =
     object : Migration(startVersion, endVersion) {
@@ -108,8 +109,20 @@ val sqlCoroutineScope = CoroutineScope(Dispatchers.IO)
 /**
  * Run sql in Non-Main-thread thread but Blocking and waiting of result.
  * */
-fun <T> sqlBlocking(useRepositoryBlock: suspend () -> T): T = runBlocking { useRepositoryBlock() }
-fun <T> sqlAsync(useRepositoryBlock: suspend () -> T): Deferred<T> = sqlCoroutineScope.async { useRepositoryBlock() }
+fun <T> sqlBlocking(
+    exceptionHandler: CoroutineExceptionHandler = sqlDefaultExceptionHandler,
+    useRepositoryBlock: suspend () -> T,
+): T = runBlocking { sqlAsync(exceptionHandler, useRepositoryBlock).await() }
+
+fun <T> sqlAsync(
+    exceptionHandler: CoroutineExceptionHandler = sqlDefaultExceptionHandler,
+    useRepositoryBlock: suspend () -> T,
+): Deferred<T> = sqlCoroutineScope.async(exceptionHandler) { useRepositoryBlock() }
+
+val sqlDefaultExceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
+    Log.e("SQL", e.toString())
+    throw e
+}
 
 
 fun createDataBase(mainApplicationContext: MainActivity) = Room.databaseBuilder(
