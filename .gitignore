@@ -14,3 +14,4 @@
 .cxx
 local.properties
 /.idea/
+/app/src/main/kotlin/solutions/mk/mobile/experimental/

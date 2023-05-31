@@ -1,0 +1,3 @@
+<resources>
+    <string name="activity__main__import_record_btn_txt" translatable="true">Запись импорта FAB</string>
+</resources>

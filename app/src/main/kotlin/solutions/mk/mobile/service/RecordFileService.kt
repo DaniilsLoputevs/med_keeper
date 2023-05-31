@@ -8,7 +8,6 @@ import solutions.mk.mobile.common.*
 import solutions.mk.mobile.config.ApplicationConfig
 import java.io.File
 import java.io.FileOutputStream
-import kotlin.io.use
 
 @Single class RecordFileService {
     private val contentResolver: ContentResolver by injectAndroid()

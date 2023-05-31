@@ -2,10 +2,10 @@ package solutions.mk.mobile.common
 
 import androidx.appcompat.widget.AppCompatEditText
 import com.google.android.material.textfield.TextInputLayout
+import solutions.mk.mobile.R
 
 
-// todo - move to String resource for i18n
-const val requiredFieldMsg = "required field!"
+val requiredFieldMsg by lazy { getStrResource(R.string.validation__required_field) }
 
 /**
  * Validation for Layout and TextInput

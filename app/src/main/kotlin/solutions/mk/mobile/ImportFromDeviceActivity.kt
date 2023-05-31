@@ -25,6 +25,8 @@ class ImportFromDeviceActivity : AppCompatActivity() {
     private val groupRepo: GroupRepo by inject()
     private val recordAndGroupRelationRepo: RecordAndGroupRelationRepo by inject()
 
+    private val strRecordSaveSuccessfully by strResource(R.string.activity__import_from_device__record_saved_successfully)
+    private val strFinalFilenameSuffix by strResource(R.string.activity__import_from_device__final_filename_suffix)
 
     /**
      * TODO - (for activity/fragment about Select Images)
@@ -65,8 +67,9 @@ class ImportFromDeviceActivity : AppCompatActivity() {
     }
 
     private fun initActivityUI() {
+        // todo - "*/*" select any file type
         val selectImagesAction = registryAction(GetMultipleContents()) { selectedImagesUris.value = it }
-        selectImagesButton.setOnClickListener { selectImagesAction.launch("image/*") } // todo - "*/*" select any file type
+        selectImagesButton.setOnClickListener { selectImagesAction.launch("image/*") }
 
         // todo - https://stackoverflow.com/questions/11535011/edittext-field-is-required-before-moving-on-to-another-activity
         //          last answer
@@ -117,12 +120,12 @@ class ImportFromDeviceActivity : AppCompatActivity() {
             println("imageUris[0]  = ${imageUris[0]}}")
             println("groups        = ${sqlBlocking { groupRepo.getAll() }}")
             println("relations     = ${sqlBlocking { recordAndGroupRelationRepo.getAll() }}")
-            Toast.makeText(getAndroid(), "file saved successfully", Toast.LENGTH_SHORT).show() // todo - i18n
+            Toast.makeText(getAndroid(), strRecordSaveSuccessfully, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun updateHelpTextResultFileName(s: Editable) {
-        if (s.isNotBlank()) recordFileNameLayout.helperText = "$s.pdf - result file name" // todo - i18n
+        if (s.isNotBlank()) recordFileNameLayout.helperText = "$s.pdf - $strFinalFilenameSuffix"
     }
 
 }

@@ -12,7 +12,6 @@ import solutions.mk.mobile.MainActivity
 import solutions.mk.mobile.persist.createDataBase
 
 /**
- * TODO - impl bean with all i18n string resources(simple access into code for all string resources by 1 access point)
  */
 @Module
 @ComponentScan("solutions.mk.mobile")

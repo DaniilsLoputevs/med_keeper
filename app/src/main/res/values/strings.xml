@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">med_keeper</string>
+    <string name="app_name" translatable="false">med_keeper</string>
+    <string name="activity__main__import_record_btn_txt">FAB import record</string>
+    <string name="activity__import_from_device__select_images_btn">Select images</string>
+    <string name="activity__import_from_device__filename_input">filename</string>
+    <string name="activity__import_from_device__groups_input">groups</string>
+    <string name="activity__import_from_device__description_input">description</string>
+    <string name="activity__import_from_device__submit_btn">Save images as one PDF file</string>
+    <string name="activity__import_from_device__record_saved_successfully">Record saved successfully</string>
+    <string name="activity__import_from_device__final_filename_suffix">final filename</string>
+    <string name="validation__required_field">required field!</string>
 </resources>

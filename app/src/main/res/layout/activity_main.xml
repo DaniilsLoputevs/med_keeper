@@ -20,7 +20,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
 
-            android:contentDescription="FAB import record"
+            android:contentDescription="@string/activity__main__import_record_btn_txt"
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="40dp"
             />

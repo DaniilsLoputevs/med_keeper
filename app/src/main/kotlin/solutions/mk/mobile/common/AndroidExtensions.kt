@@ -1,10 +1,12 @@
 package solutions.mk.mobile.common
 
 import android.content.ContentResolver
+import android.content.Context
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
@@ -48,6 +50,31 @@ fun <R> PdfDocument.use(block: (PdfDocument) -> R): R =
         e.printStackTrace()
         Toast.makeText(getAndroid(), "Something wrong: $e", Toast.LENGTH_LONG).show()
         throw e
+    }
+
+/**
+ * Get localized value for String Resource by resourceId from file with string value.
+ * Examples: ./res/values/string.xml, ./res/values-ru/string.xml
+ * Use it as private field injection.
+ * ```
+ * private val strFinalFilenameSuffix by strResource(R.string.activity__import_from_device__final_filename_suffix)
+ * ```
+ * @param resourceId - example: R.string.validation__required_field
+ */
+fun strResource(resourceId: Int): Lazy<String> = lazy { getStrResource(resourceId) }
+
+/**
+ * Get localized value for String Resource by resourceId from file with string value.
+ * Examples: ./res/values/string.xml, ./res/values-ru/string.xml
+ * @param resourceId example: `R.string.validation__required_field`
+ */
+fun getStrResource(resourceId: Int): String =
+    try {
+        get<Context>().getString(resourceId)
+    } catch (e: Throwable) {
+        e.printStackTrace()
+        Log.e("getStringResource", e.toString())
+        ""
     }
 
 

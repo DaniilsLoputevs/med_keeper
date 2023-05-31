@@ -33,8 +33,9 @@ inline fun <reified T : Any> getAndroid(
  */
 inline fun <reified T : Any> inject(
     qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
-) = lazy { GlobalContext.get().get<T>(qualifier, parameters) }
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+    noinline parameters: ParametersDefinition? = null,
+) = GlobalContext.get().inject<T>(qualifier, mode, parameters)
 
 
 /**
@@ -43,6 +44,7 @@ inline fun <reified T : Any> inject(
  */
 inline fun <reified T : Any> injectAndroid(
     qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
-) = inject<T>(qualifier, parameters)
+    mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
+    noinline parameters: ParametersDefinition? = null,
+) = inject<T>(qualifier, mode, parameters)
 
