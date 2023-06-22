@@ -10,6 +10,7 @@ import kotlinx.coroutines.*
 import solutions.mk.mobile.MainActivity
 import solutions.mk.mobile.persist.dao.*
 import solutions.mk.mobile.persist.migrations.migrationChangelog
+import java.util.concurrent.Executors
 
 /**
  *  Main Room class - provide access to all DAO object which created at run-time by Room Framework.
@@ -120,7 +121,7 @@ fun <T> sqlAsync(
 ): Deferred<T> = sqlCoroutineScope.async(exceptionHandler) { useRepositoryBlock() }
 
 val sqlDefaultExceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
-    Log.e("SQL", e.toString())
+    Log.e("Room", e.toString())
     throw e
 }
 
@@ -129,15 +130,19 @@ fun createDataBase(mainApplicationContext: MainActivity) = Room.databaseBuilder(
     mainApplicationContext,
     ApplicationDatabase::class.java,
     "mobile.mk.solutions"
-).addMigrations(*migrationChangelog).let {
-    try {
-        it.build()
-    } catch (e: Exception) {
-        e.printStackTrace()
-        /* Sometimes in case of an error at the start of the application, the stacktrace is
-        not shown or comes with a long delay in the log from IDEA run. This Thread.sleep(...) is here to
-        increase the chance of showing the stacktrace in the developer log.*/
-        Thread.sleep(500)
-        throw e
-    }
+)
+    .setSqlQueryLogger()
+    .addMigrations(*migrationChangelog)
+    .build()
+
+
+fun <T : RoomDatabase> RoomDatabase.Builder<T>.setSqlQueryLogger(): RoomDatabase.Builder<T> =
+    this.setQueryCallback(RoomQueryCallback { sqlQuery: String, bindArgs: List<Any?> ->
+        Log.i("Room", "SQL Query: $sqlQuery; SQL Args: $bindArgs")
+    }, Executors.newSingleThreadExecutor())
+
+fun interface RoomQueryCallback
+    : RoomDatabase.QueryCallback {
+    override fun onQuery(sqlQuery: String, bindArgs: List<Any?>)
 }
+

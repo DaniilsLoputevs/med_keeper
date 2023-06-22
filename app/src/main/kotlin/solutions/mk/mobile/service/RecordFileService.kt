@@ -3,17 +3,21 @@ package solutions.mk.mobile.service
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import org.koin.core.annotation.Single
+import androidx.core.content.FileProvider
+import solutions.mk.mobile.BuildConfig
 import solutions.mk.mobile.common.*
 import solutions.mk.mobile.config.ApplicationConfig
 import java.io.File
 import java.io.FileOutputStream
 
-@Single class RecordFileService {
+//@Single
+class RecordFileService {
     private val contentResolver: ContentResolver by injectAndroid()
     private val appContext: Context by injectAndroid()
     private val appConfig: ApplicationConfig by inject()
     private val pdfConverter: PDFConverter by inject()
+
+    private val fileProviderAuthorityFromManifest = BuildConfig.APPLICATION_ID + ".provider"
 
     /**
      * default: File("${app}/files/records")
@@ -51,6 +55,13 @@ import java.io.FileOutputStream
                     }
                 }
             }
+
+    fun getUriAndMimeForeRecordFile(fileNameWithExtension: String): Pair<Uri, String?> {
+        val recordFile = File(recordFilesDir, fileNameWithExtension)
+        val uri: Uri = FileProvider.getUriForFile(get(), fileProviderAuthorityFromManifest, recordFile)
+        val mime: String? = contentResolver.getType(uri)
+        return uri to mime
+    }
 
     fun deleteRecordFile(fileNameWithExtension: String) = File(recordFilesDir, fileNameWithExtension).deleteOnExit()
 

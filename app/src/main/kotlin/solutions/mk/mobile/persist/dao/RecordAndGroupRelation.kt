@@ -13,11 +13,8 @@ data class RecordAndGroupRelation(
     val groupName: String,
 )
 
-@Dao interface RecordAndGroupRelationRepo {
+@Dao interface RecordAndGroupRelationRepo : CrudRepo<RecordAndGroupRelation> {
 
     @Query("SELECT * FROM record__group__relation")
     suspend fun getAll(): List<RecordAndGroupRelation>
-    @Insert suspend fun insertAll(records: List<RecordAndGroupRelation>)
-    @Update suspend fun updateAll(vararg records: RecordAndGroupRelation)
-    @Delete suspend fun deleteAll(vararg records: RecordAndGroupRelation)
 }

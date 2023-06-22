@@ -34,8 +34,9 @@ fun <CONTRACT, LAUNCH_PARAM, CALLBACK_PARAM> AppCompatActivity.registryAction(
         where CONTRACT : ActivityResultContract<LAUNCH_PARAM, CALLBACK_PARAM> =
     activityResultRegistry.register(Random.nextDouble().toString(), this, activityContract, activityCallback)
 
-inline fun <reified ACTIVITY : AppCompatActivity> AppCompatActivity.switchActivityTo() =
-    this.startActivity(Intent(this, ACTIVITY::class.java))
+inline fun <reified ACTIVITY : AppCompatActivity> AppCompatActivity.switchActivityTo(
+    intentConfig: Intent.() -> Any = {}
+) = this.startActivity(Intent(this, ACTIVITY::class.java).also { it.intentConfig() })
 
 
 fun ContentResolver.query(

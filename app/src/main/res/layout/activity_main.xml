@@ -8,6 +8,22 @@
         tools:context=".MainActivity"
         >
 
+    <GridView
+            android:id="@+id/act_main__gv__record_groups"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:numColumns="3"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="60dp"
+            android:horizontalSpacing="50dp"
+            android:footerDividersEnabled="true"
+            />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/main_importRecord_fab"
             android:layout_width="wrap_content"
@@ -24,5 +40,6 @@
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="40dp"
             />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

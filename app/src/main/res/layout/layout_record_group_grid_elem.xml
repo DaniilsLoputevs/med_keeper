@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+        >
+
+    <ImageView
+            android:id="@+id/lyt_record_group_grid_elem__ic__icon"
+            android:src="@drawable/ic_folder"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="centerInside"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            />
+
+    <TextView
+            android:id="@+id/lyt_record_group_grid_elem__tv__text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="record group name"
+            android:textColor="#000"
+            android:layout_below="@+id/lyt_record_group_grid_elem__ic__icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            />
+
+</RelativeLayout>

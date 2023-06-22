@@ -17,6 +17,9 @@ import androidx.room.*
  */
 @Entity(tableName = "records")
 data class RecordEntity(
+    /**
+     * Store full filename with extension and without path. Example: "test_pdf_file.pdf"
+     */
     @ColumnInfo("file_name")
     @PrimaryKey val fileName: String,
 
@@ -24,15 +27,15 @@ data class RecordEntity(
     val description: String,
 )
 
-@Dao
-interface RecordRepo {
+val RecordEntity.fileExtension: String get() = this.fileName.split(".").last()
+
+@Dao interface RecordRepo : CrudRepo<RecordEntity> {
+
+    @Query("SELECT * FROM records r WHERE r.file_name IN (SELECT rgl.file_name FROM record__group__relation rgl WHERE rgl.group_name = :groupName)")
+    suspend fun getAllByGroupName(groupName: String): List<RecordEntity>
 
     @Query("SELECT * FROM records")
     suspend fun getAll(): List<RecordEntity>
-
-    @Insert suspend fun insertAll(vararg records: RecordEntity)
-    @Update suspend fun updateAll(vararg records: RecordEntity)
-    @Delete suspend fun deleteAll(vararg records: RecordEntity)
 
     @Query("SELECT exists(SELECT 1 FROM records WHERE file_name = :filename)")
     suspend fun containsByName(filename: String): Boolean

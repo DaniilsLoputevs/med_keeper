@@ -129,17 +129,19 @@ class ImportFromDeviceActivity : AppCompatActivity() {
         val pdfFilename = recordFileService.saveRecordFilePdfFromImages(fileNameWithoutExtension, imageUris).name
         sqlBlocking {
             recordRepo.insertAll(RecordEntity(pdfFilename, description))
-            groupRepo.insertAll(groups)
+            groups.forEach { groupRepo.insertIfNotExists(it) }
             val relations = groups.map { RecordAndGroupRelation(fileName = pdfFilename, groupName = it.name) }
             recordAndGroupRelationRepo.insertAll(relations)
-
+        }
+        sqlBlocking {
             println("records       = ${sqlBlocking { recordRepo.getAll() }}")
             println("imageUris[0]  = ${imageUris[0]}}")
             println("groups        = ${sqlBlocking { groupRepo.getAll() }}")
             println("relations     = ${sqlBlocking { recordAndGroupRelationRepo.getAll() }}")
-            Toast.makeText(getAndroid(), strRecordSaveSuccessfully, Toast.LENGTH_SHORT).show()
-            switchActivityTo<MainActivity>()
         }
+
+        Toast.makeText(this, strRecordSaveSuccessfully, Toast.LENGTH_SHORT).show()
+        switchActivityTo<MainActivity>()
     }
 
     private fun updateHelpTextResultFileName(s: Editable) {

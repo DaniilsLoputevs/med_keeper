@@ -76,7 +76,7 @@ class RecordGroupsInputEditText(context: Context, attributeSet: AttributeSet?) :
     private fun createTokenView(text: String?): View {
         val layout = LinearLayout(context)
         layout.orientation = LinearLayout.HORIZONTAL
-        val view: View = LayoutInflater.from(context).inflate(R.layout.token_layout, layout, false)
+        val view: View = LayoutInflater.from(context).inflate(R.layout.layout_edit_text_chip, layout, false)
         val chip = view.findViewById<Chip>(R.id.chip)
         chip.text = text
         layout.addView(chip)

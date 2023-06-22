@@ -3,24 +3,26 @@ package solutions.mk.mobile.config
 import android.content.ContentResolver
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
+//import org.koin.core.annotation.ComponentScan
+//import org.koin.core.annotation.Module
 import org.koin.dsl.binds
 import org.koin.dsl.module
-import org.koin.ksp.generated.module
+//import org.koin.ksp.generated.module
 import solutions.mk.mobile.MainActivity
 import solutions.mk.mobile.persist.createDataBase
+import solutions.mk.mobile.service.PDFConverter
+import solutions.mk.mobile.service.RecordFileService
 
 /**
  */
-@Module
-@ComponentScan("solutions.mk.mobile")
+//@Module
+//@ComponentScan("solutions.mk.mobile")
 class KoinConfig(private val mainApplicationContext: MainActivity) {
     fun startKoin() = org.koin.core.context.startKoin {
         androidLogger()
         androidContext(mainApplicationContext)
         modules(
-            module,
+            appModule,
             androidModule,
             roomModule,
         )
@@ -31,11 +33,21 @@ class KoinConfig(private val mainApplicationContext: MainActivity) {
     }
 
     private val roomModule = module {
-        val database = createDataBase(mainApplicationContext)
-        single { database }
-        single { database.recordRepo }
-        single { database.groupRepo }
-        single { database.recordAndGroupRelationRepo }
+        with(createDataBase(mainApplicationContext)) {
+            single { this }
+            single { recordRepo }
+            single { groupRepo }
+            single { recordAndGroupRelationRepo }
+        }
+    }
+
+    /**
+     * For case if Koin ksp will not work
+     */
+    private val appModule = module {
+        single { RecordFileService() } // this class broke Koin ksp  - why? IDK, it's fucking magic! ^_^
+        single { ApplicationConfig() }
+        single { PDFConverter() }
     }
 
 }
